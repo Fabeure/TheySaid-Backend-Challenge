@@ -29,6 +29,7 @@ export class BlogResolver {
         if (!blog) {
             return new BlogNotFoundError(id);
         }
+
         return blog;
     }
 

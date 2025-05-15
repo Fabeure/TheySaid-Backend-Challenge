@@ -11,14 +11,6 @@ export class BlogService {
     ) { }
 
     async create(blogData: CreateBlogInput): Promise<Blog> {
-        const existingBlog = await this.blogRepository.findOne({
-            where: { title: blogData.title }
-        });
-
-        if (existingBlog) {
-            throw new ConflictException(`Blog with title "${blogData.title}" already exists`);
-        }
-
         const blog = this.blogRepository.create(blogData);
 
         try {
@@ -29,22 +21,25 @@ export class BlogService {
     }
 
     async findAll(skip: number, take: number): Promise<Blog[]> {
-        const blogs = await this.blogRepository.find({
-            skip: skip,
-            take: take
-        });
-        if (blogs.length === 0) {
-            throw new NotFoundException('No blogs found');
+        try {
+            const blogs = await this.blogRepository.find({
+                skip: skip,
+                take: take
+            });
+
+            return blogs;
+        } catch (error) {
+            throw new InternalServerErrorException(`Failed to fetch blogs.`);
         }
-        return blogs;
     }
 
-    async findOne(id: string): Promise<Blog> {
-        const blog = await this.blogRepository.findOne({ where: { id } });
-        if (!blog) {
-            throw new NotFoundException(`Blog with ID ${id} not found`);
+    async findOne(id: string): Promise<Blog | null> {
+        try {
+            const blog = await this.blogRepository.findOne({ where: { id } });
+            return blog;
+        } catch (error) {
+            throw new InternalServerErrorException(`Failed to fetch blog.`);
         }
-        return blog;
     }
 
     async update(updateData: UpdateBlogInput): Promise<Blog> {
