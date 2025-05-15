@@ -21,6 +21,7 @@ export class BlogService {
             this.logger.log(`Successfully created blog with ID: ${result.id}`);
             return result;
         } catch (error) {
+            this.logger.error(`Failed to create blog: ${error}`);
             throw new InternalServerErrorException(`Failed to add blog.`);
         }
     }
@@ -37,6 +38,7 @@ export class BlogService {
 
             return blogs;
         } catch (error) {
+            this.logger.error(`Failed to fetch blogs: ${error}`);
             throw new InternalServerErrorException(`Failed to fetch blogs.`);
         }
     }
@@ -48,46 +50,37 @@ export class BlogService {
             const blog = await this.blogRepository.findOne({ where: { id } });
             return blog;
         } catch (error) {
+            this.logger.error(`Failed to fetch blog ${id}: ${error}`);
             throw new InternalServerErrorException(`Failed to fetch blog.`);
         }
     }
 
-    async update(updateData: UpdateBlogInput): Promise<Blog> {
-        this.logger.log(`Updating blog with ID: ${updateData.id}`);
+    async update(blog: Blog, updateData: UpdateBlogInput): Promise<Blog> {
+        this.logger.log(`Updating blog with ID: ${blog.id}`);
 
-        let { id, ...updates } = updateData;
-
-
-        const blog = await this.blogRepository.preload({
-            id,
-            ...updates,
-        });
-
-        if (!blog) {
-            this.logger.warn(`Update failed - blog not found with ID: ${id}`);
-            throw new NotFoundException(`Blog with ID ${id} not found`);
-        }
+        Object.assign(blog, updateData);
 
         try {
             const result = await this.blogRepository.save(blog);
-            this.logger.log(`Successfully updated blog with ID: ${id}`);
+            this.logger.log(`Successfully updated blog with ID: ${blog.id}`);
             return result;
         } catch (error) {
-            throw new InternalServerErrorException(`Failed to update blog with ID ${id}`);
+            this.logger.error(`Failed to update blog ${blog.id}: ${error}`);
+            throw new InternalServerErrorException(`Failed to update blog with ID ${blog.id}`);
         }
     }
 
 
-    async remove(id: string): Promise<void> {
-        this.logger.log(`Attempting to delete blog with ID: ${id}`);
+    async remove(blog: Blog): Promise<void> {
+        this.logger.log(`Attempting to delete blog with ID: ${blog.id}`);
 
-        const result = await this.blogRepository.delete(id);
-
-        if (result.affected === 0) {
-            throw new NotFoundException(`Blog with ID ${id} not found, nothing deleted.`);
+        try {
+            await this.blogRepository.remove(blog);
+            this.logger.log(`Successfully deleted blog with ID: ${blog.id}`);
+        } catch (error) {
+            this.logger.error(`Failed to delete blog ${blog.id}: ${error}`);
+            throw new InternalServerErrorException(`Failed to delete blog with ID ${blog.id}`);
         }
-
-        this.logger.log(`Successfully deleted blog with ID: ${id}`);
     }
 
     async titleExists(title: string): Promise<boolean> {
@@ -102,6 +95,7 @@ export class BlogService {
             this.logger.debug(`Title "${title}" ${exists ? 'already exists' : 'is available'}`);
             return exists;
         } catch (error) {
+            this.logger.error(`Failed to check title existence "${title}": ${error}`);
             throw new ConflictException('Failed to check blog title existence');
         }
     }
