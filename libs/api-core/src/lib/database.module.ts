@@ -17,6 +17,5 @@ import { Blog } from '@myorg/api-models'
             entities: [Blog]
         }),
     ],
-    exports: [TypeOrmModule], // Make TypeORM available across the app
 })
 export class DatabaseModule { }

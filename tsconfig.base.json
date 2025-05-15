@@ -17,6 +17,7 @@
     "paths": {
       "@myorg/api-blogs": ["libs/api-blogs/src/index.ts"],
       "@myorg/api-core": ["libs/api-core/src/index.ts"],
+      "@myorg/api-logging": ["libs/api-logging/src/index.ts"],
       "@myorg/api-models": ["libs/api-models/src/index.ts"]
     }
   },
