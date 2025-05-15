@@ -16,7 +16,7 @@
   },
   "include": [
     "src/**/*.ts",
-    "../api-models/src/lib/blog.interface.ts"
+    "../api-models/src/lib/blog/model/blog.interface.ts"
   ],
   "exclude": [
     "jest.config.ts",
