@@ -6,4 +6,4 @@ import { BlogsResolver } from './blogs.resolver';
   providers: [BlogsResolver],
   exports: [],
 })
-export class ApiBlogsModule {}
+export class BlogsModule { }
