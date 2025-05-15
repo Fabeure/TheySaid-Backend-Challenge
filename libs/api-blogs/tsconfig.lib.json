@@ -15,7 +15,8 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "../api-models/src/lib/blog.interface.ts"
   ],
   "exclude": [
     "jest.config.ts",
