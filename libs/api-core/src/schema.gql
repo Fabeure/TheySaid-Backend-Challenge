@@ -1,0 +1,71 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Blog {
+  content: String!
+  createdAt: DateTime!
+  id: ID!
+  title: String!
+  updatedAt: DateTime!
+}
+
+type BlogNotFoundError {
+  blogId: String!
+  code: String!
+  message: String!
+}
+
+union BlogResponse = Blog | BlogNotFoundError | BlogTitleExistsError
+
+type BlogTitleExistsError {
+  code: String!
+  message: String!
+  title: String!
+}
+
+input CreateBlogInput {
+  """Content of the blog"""
+  content: String!
+
+  """Title of the blog"""
+  title: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Mutation {
+  """Create a new blog"""
+  createBlog(input: CreateBlogInput!): BlogResponse!
+
+  """Delete a blog"""
+  deleteBlog(id: ID!): BlogResponse!
+
+  """Update an existing blog"""
+  updateBlog(input: UpdateBlogInput!): BlogResponse!
+}
+
+type Query {
+  """Get a blog by ID"""
+  blog(
+    """Blog ID"""
+    id: ID!
+  ): BlogResponse!
+
+  """Get all blogs with optional pagination"""
+  blogs(skip: Int = 0, take: Int = 10): [Blog!]!
+}
+
+input UpdateBlogInput {
+  """Content of the blog"""
+  content: String
+
+  """ID of the blog to update"""
+  id: ID!
+
+  """Title of the blog"""
+  title: String
+}
