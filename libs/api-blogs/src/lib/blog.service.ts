@@ -11,48 +11,40 @@ export class BlogService {
     ) { }
 
     async create(blogData: CreateBlogInput): Promise<Blog> {
+        const existingBlog = await this.blogRepository.findOne({
+            where: { title: blogData.title }
+        });
+
+        if (existingBlog) {
+            throw new ConflictException(`Blog with title "${blogData.title}" already exists`);
+        }
+
+        const blog = this.blogRepository.create(blogData);
+
         try {
-            const existingBlog = await this.blogRepository.findOne({
-                where: { title: blogData.title }
-            });
-
-            if (existingBlog) {
-                throw new ConflictException(`Blog with title "${blogData.title}" already exists`);
-            }
-
-            const blog = this.blogRepository.create(blogData);
-
             return await this.blogRepository.save(blog);
         } catch (error) {
-            throw new InternalServerErrorException('Failed to create blog');
+            throw new InternalServerErrorException(`Failed to add blog.`);
         }
     }
 
     async findAll(skip: number, take: number): Promise<Blog[]> {
-        try {
-            const blogs = await this.blogRepository.find({
-                skip: skip,
-                take: take
-            });
-            if (blogs.length === 0) {
-                throw new NotFoundException('No blogs found');
-            }
-            return blogs;
-        } catch (error) {
-            throw new InternalServerErrorException('Failed to fetch blogs');
+        const blogs = await this.blogRepository.find({
+            skip: skip,
+            take: take
+        });
+        if (blogs.length === 0) {
+            throw new NotFoundException('No blogs found');
         }
+        return blogs;
     }
 
     async findOne(id: string): Promise<Blog> {
-        try {
-            const blog = await this.blogRepository.findOne({ where: { id } });
-            if (!blog) {
-                throw new NotFoundException(`Blog with ID ${id} not found`);
-            }
-            return blog;
-        } catch (error) {
-            throw new InternalServerErrorException(`Failed to fetch blog with ID ${id}`);
+        const blog = await this.blogRepository.findOne({ where: { id } });
+        if (!blog) {
+            throw new NotFoundException(`Blog with ID ${id} not found`);
         }
+        return blog;
     }
 
     async update(updateData: UpdateBlogInput): Promise<Blog> {
@@ -77,14 +69,10 @@ export class BlogService {
 
 
     async remove(id: string): Promise<void> {
-        try {
-            const result = await this.blogRepository.delete(id);
+        const result = await this.blogRepository.delete(id);
 
-            if (result.affected === 0) {
-                throw new NotFoundException(`Blog with ID ${id} not found`);
-            }
-        } catch (error) {
-            throw new InternalServerErrorException(`Failed to delete blog with ID ${id}`);
+        if (result.affected === 0) {
+            throw new NotFoundException(`Blog with ID ${id} not found, nothing deleted.`);
         }
     }
 

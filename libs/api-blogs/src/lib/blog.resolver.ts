@@ -41,11 +41,7 @@ export class BlogResolver {
             return new BlogTitleExistsError(input.title);
         }
 
-        try {
-            return await this.blogService.create(input);
-        } catch (error) {
-            throw new InternalServerErrorException('Failed to create blog');
-        }
+        return await this.blogService.create(input);
     }
 
     @Mutation(() => BlogResponseUnion, { name: 'updateBlog', description: 'Update an existing blog' })
@@ -64,11 +60,7 @@ export class BlogResolver {
             }
         }
 
-        try {
-            return await this.blogService.update(input);
-        } catch (error) {
-            throw new InternalServerErrorException('Failed to update blog');
-        }
+        return await this.blogService.update(input);
     }
 
     @Mutation(() => BlogResponseUnion, { name: 'deleteBlog', description: 'Delete a blog' })
@@ -80,11 +72,7 @@ export class BlogResolver {
             return new BlogNotFoundError(id);
         }
 
-        try {
-            await this.blogService.remove(id);
-            return blog;
-        } catch (error) {
-            throw new InternalServerErrorException('Failed to delete blog');
-        }
+        await this.blogService.remove(id);
+        return blog;
     }
 }
