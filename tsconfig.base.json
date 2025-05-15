@@ -16,7 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@myorg/api-blogs": ["libs/api-blogs/src/index.ts"],
-      "@myorg/api-core": ["libs/api-core/src/index.ts"]
+      "@myorg/api-core": ["libs/api-core/src/index.ts"],
+      "@myorg/api-models": ["libs/api-models/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
