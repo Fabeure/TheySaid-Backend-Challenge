@@ -7,7 +7,7 @@ import {
     BlogTitleExistsError,
 } from '@myorg/api-models';
 import { PubSubService } from '@myorg/api-core'
-import { Inject, InternalServerErrorException } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 
 @Resolver(() => Blog)
 export class BlogResolver {

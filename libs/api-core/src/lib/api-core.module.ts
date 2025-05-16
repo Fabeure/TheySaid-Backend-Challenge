@@ -7,6 +7,6 @@ import { PubSubService } from './pubsub.service';
   controllers: [],
   providers: [],
   exports: [],
-  imports: [DatabaseModule, GraphqlModule, PubSubService],
+  imports: [DatabaseModule, GraphqlModule],
 })
 export class ApiCoreModule { }

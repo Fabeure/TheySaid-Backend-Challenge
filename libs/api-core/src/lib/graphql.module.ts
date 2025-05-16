@@ -10,6 +10,10 @@ import { join } from 'path';
             autoSchemaFile: true, // join(process.cwd(), 'libs/api-core/src/schema.gql'), FIXME this causes infinite rebuilds when schema already exists :(
             sortSchema: true,
             graphiql: true,
+            subscriptions: {
+                'graphql-ws': true,  // For modern clients
+                'subscriptions-transport-ws': true  // Legacy support
+              }
         }),
     ],
 })

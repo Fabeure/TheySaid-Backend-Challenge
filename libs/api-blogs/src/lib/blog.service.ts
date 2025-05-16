@@ -35,8 +35,8 @@ export class BlogService {
                 take: take
             });
             this.logger.debug(`Found ${blogs.length} blogs`);
-
             return blogs;
+
         } catch (error) {
             this.logger.error(`Failed to fetch blogs: ${error}`);
             throw new InternalServerErrorException(`Failed to fetch blogs.`);
@@ -90,10 +90,11 @@ export class BlogService {
             const count = await this.blogRepository.count({
                 where: { title },
             });
-
+            
             const exists = count > 0;
             this.logger.debug(`Title "${title}" ${exists ? 'already exists' : 'is available'}`);
             return exists;
+
         } catch (error) {
             this.logger.error(`Failed to check title existence "${title}": ${error}`);
             throw new ConflictException('Failed to check blog title existence');
