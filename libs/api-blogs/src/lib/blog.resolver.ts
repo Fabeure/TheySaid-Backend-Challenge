@@ -1,4 +1,4 @@
-import { Args, ID, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, ID, Int, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { BlogService } from './blog.service';
 import { Blog, CreateBlogInput, UpdateBlogInput } from '@myorg/api-models';
 import {
@@ -6,10 +6,16 @@ import {
     BlogNotFoundError,
     BlogTitleExistsError,
 } from '@myorg/api-models';
+import { PubSubService } from '@myorg/api-core'
+import { Inject, InternalServerErrorException } from '@nestjs/common';
 
 @Resolver(() => Blog)
 export class BlogResolver {
-    constructor(private readonly blogService: BlogService) { }
+    constructor(
+        private readonly blogService: BlogService,
+        @Inject(PubSubService) private readonly pubSub: PubSubService
+
+    ) { }
 
     @Query(() => [Blog], { name: 'blogs', description: 'Get all blogs with optional pagination' })
     async getBlogs(
@@ -40,7 +46,9 @@ export class BlogResolver {
             return new BlogTitleExistsError(input.title);
         }
 
-        return await this.blogService.create(input);
+        const blog = await this.blogService.create(input);
+        await this.pubSub.publish('BLOG_ADDED', { blogAdded: blog });
+        return blog;
     }
 
     @Mutation(() => BlogResponseUnion, { name: 'updateBlog', description: 'Update an existing blog' })
@@ -73,5 +81,17 @@ export class BlogResolver {
 
         await this.blogService.remove(blog);
         return true;
+    }
+
+    @Subscription(() => Blog, {
+        name: 'blogAdded',
+        description: 'Subscribe to new blog posts in real-time'
+    })
+    blogAdded() {
+        try {
+            return this.pubSub.asyncIterator('BLOG_ADDED');
+        } catch (error) {
+            throw new Error('Could not establish subscription');
+        }
     }
 }
