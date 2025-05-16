@@ -1,36 +1,35 @@
-import { ObjectType, Field } from '@nestjs/graphql';
-import { GraphQLErrorCodes } from '../../graphql/errors/error-codes.enum';
+import { ObjectType, Field, createUnionType } from '@nestjs/graphql';
+import { BaseError } from '../../graphql/errors/errors.interface';
+import { Blog } from '../model/blog.interface';
+import { BlogGraphQLErrorCodes } from './blog-errors.enum';
 
 @ObjectType()
-export class BlogNotFoundError {
-    @Field(() => String)
-    message: string;
+export class BlogNotFoundError extends BaseError {
+  @Field(() => String)
+  id: string;
 
-    @Field(() => String)
-    blogId: string;
-
-    @Field(() => String)
-    code: string = GraphQLErrorCodes.BLOG_NOT_FOUND;
-
-    constructor(blogId: string) {
-        this.message = `Blog with ID ${blogId} not found`;
-        this.blogId = blogId;
-    }
+  constructor(id: string) {
+    super(BlogGraphQLErrorCodes.BLOG_NOT_FOUND, `Blog with ID ${id} not found`);
+    this.id = id;
+  }
 }
 
 @ObjectType()
-export class BlogTitleExistsError {
-    @Field(() => String)
-    message: string;
+export class BlogTitleExistsError extends BaseError {
+  @Field(() => String)
+  title: string;
 
-    @Field(() => String)
-    title: string;
-
-    @Field(() => String)
-    code: string = GraphQLErrorCodes.BLOG_TITLE_EXISTS;
-
-    constructor(title: string) {
-        this.message = `Blog with title "${title}" already exists`;
-        this.title = title;
-    }
+  constructor(title: string) {
+    super(BlogGraphQLErrorCodes.BLOG_TITLE_EXISTS, `Blog with title "${title}" already exists`);
+    this.title = title;
+  }
 }
+
+export const BlogResponseUnion = createUnionType({
+    name: 'BlogResponse',
+    types: () => [
+        Blog,
+        BlogNotFoundError,
+        BlogTitleExistsError,
+    ],
+});
