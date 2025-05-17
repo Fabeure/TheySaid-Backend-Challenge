@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BlogResolver } from './blog.resolver';
 import { BlogService } from './blog.service';
 import { PubSubService } from '@myorg/api-core';
-import { Blog, BlogNotFoundError, BlogTitleExistsError } from '@myorg/api-models';
+import { Blog, BlogNotFoundError, BlogTitleExistsError, DeleteBlogSuccess } from '@myorg/api-models';
 
 describe('BlogResolver', () => {
   let resolver: BlogResolver;
@@ -114,11 +114,12 @@ describe('BlogResolver', () => {
 
   describe('deleteBlog', () => {
     it('should return true when deletion succeeds', async () => {
+      const expectedResult = new DeleteBlogSuccess(true);
       blogService.findOne = jest.fn().mockResolvedValue(mockBlog);
       blogService.remove = jest.fn().mockResolvedValue(undefined);
 
       const result = await resolver.deleteBlog('1');
-      expect(result).toBe(true);
+      expect(result).toEqual(expectedResult);
     });
 
     it('should return BlogNotFoundError if blog not found', async () => {
