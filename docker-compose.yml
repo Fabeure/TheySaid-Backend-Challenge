@@ -1,6 +1,6 @@
 services:
   app:
-    image: they-said:latest
+    image: fabeure/blog-api:latest
     ports:
       - "3000:3000"
     environment:

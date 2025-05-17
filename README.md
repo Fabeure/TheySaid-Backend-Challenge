@@ -62,12 +62,27 @@ To run this application, you'll need:
 
 ## 🐳 Docker Deployment
 
-### Option 1: Using Docker Compose (Recommended)
+### Option 1: Using Pre-built Image from Docker Hub
+
+1. **Pull and Run with Docker Compose**
+
+   ```bash
+   docker-compose up -d
+   ```
+
+   This will automatically pull the latest image from Docker Hub and start all services.
+
+2. **Stop Services**
+   ```bash
+   docker-compose down
+   ```
+
+### Option 2: Building Locally
 
 1. **Build the Application**
 
    ```bash
-   docker build -t they-said:latest -f apps/TheySaid/Dockerfile .
+   docker build -t fabeure/blog-api:latest -f apps/TheySaid/Dockerfile .
    ```
 
 2. **Start Services**
@@ -315,3 +330,7 @@ npx nx test TheySaid
   # Development logs
   npx nx serve TheySaid
   ```
+
+```
+
+```
