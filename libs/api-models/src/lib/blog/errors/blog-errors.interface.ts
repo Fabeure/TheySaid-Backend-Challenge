@@ -1,11 +1,11 @@
-import { ObjectType, Field, createUnionType } from '@nestjs/graphql';
+import { ObjectType, Field, createUnionType, ID } from '@nestjs/graphql';
 import { BaseError } from '../../graphql/errors/errors.interface';
 import { Blog } from '../model/blog.interface';
 import { BlogGraphQLErrorCodes } from './blog-errors.enum';
 
 @ObjectType()
 export class BlogNotFoundError extends BaseError {
-  @Field(() => String)
+  @Field(() => ID)
   id: string;
 
   constructor(id: string) {
