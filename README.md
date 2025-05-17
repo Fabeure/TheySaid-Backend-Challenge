@@ -164,8 +164,8 @@ You can test these operations in the GraphQL Playground at `http://localhost:300
 
 ```graphql
 # Get all blogs with pagination
-query GetAllBlogs($skip: Int = 0, $take: Int = 10) {
-  blogs(skip: $skip, take: $take) {
+query GetAllBlogs {
+  blogs(skip: 0, take: 10) {
     id
     title
     content
@@ -175,8 +175,9 @@ query GetAllBlogs($skip: Int = 0, $take: Int = 10) {
 }
 
 # Get a specific blog by ID
-query GetBlog($id: ID!) {
-  blog(id: $id) {
+query GetBlog {
+  blog(id: "123e4567-e89b-12d3-a456-426614174000") {
+    # Must be a valid UUID
     ... on Blog {
       id
       title
@@ -197,8 +198,13 @@ query GetBlog($id: ID!) {
 
 ```graphql
 # Create a new blog
-mutation CreateBlog($input: CreateBlogInput!) {
-  createBlog(input: $input) {
+mutation CreateBlog {
+  createBlog(
+    input: {
+      title: "My First Blog" # Min length: 3, Max length: 100
+      content: "This is the content of my first blog post." # Max length: 5000
+    }
+  ) {
     ... on Blog {
       id
       title
@@ -215,8 +221,14 @@ mutation CreateBlog($input: CreateBlogInput!) {
 }
 
 # Update an existing blog
-mutation UpdateBlog($input: UpdateBlogInput!) {
-  updateBlog(input: $input) {
+mutation UpdateBlog {
+  updateBlog(
+    input: {
+      id: "123e4567-e89b-12d3-a456-426614174000" # Must be a valid UUID
+      title: "Updated Title" # Optional, Min length: 3, Max length: 100
+      content: "Updated content for my blog post." # Optional, Max length: 5000
+    }
+  ) {
     ... on Blog {
       id
       title
@@ -237,8 +249,9 @@ mutation UpdateBlog($input: UpdateBlogInput!) {
 }
 
 # Delete a blog
-mutation DeleteBlog($id: ID!) {
-  deleteBlog(id: $id) {
+mutation DeleteBlog {
+  deleteBlog(id: "123e4567-e89b-12d3-a456-426614174000") {
+    # Must be a valid UUID
     ... on DeleteBlogSuccess {
       success
     }
@@ -262,38 +275,6 @@ subscription OnBlogAdded {
     content
     createdAt
   }
-}
-```
-
-#### Example Variables
-
-```json
-# Variables for CreateBlog
-{
-  "input": {
-    "title": "My First Blog",    # Must be 3-100 characters
-    "content": "This is the content of my first blog post."  # Max 5000 characters
-  }
-}
-
-# Variables for UpdateBlog
-{
-  "input": {
-    "id": "123e4567-e89b-12d3-a456-426614174000",  # Must be a valid UUID
-    "title": "Updated Title",     # Optional, 3-100 characters if provided
-    "content": "Updated content"  # Optional, max 5000 characters if provided
-  }
-}
-
-# Variables for GetBlog or DeleteBlog
-{
-  "id": "123e4567-e89b-12d3-a456-426614174000"  # Must be a valid UUID
-}
-
-# Variables for GetAllBlogs (optional)
-{
-  "skip": 0,
-  "take": 10
 }
 ```
 
