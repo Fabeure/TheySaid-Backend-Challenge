@@ -129,14 +129,30 @@ type Blog {
 }
 
 input CreateBlogInput {
-  title: String!
-  content: String!
+  title: String! # Min length: 3, Max length: 100
+  content: String! # Max length: 5000
 }
 
 input UpdateBlogInput {
+  id: ID! # Must be a valid UUID
+  title: String # Optional, Min length: 3, Max length: 100
+  content: String # Optional, Max length: 5000
+}
+
+type BlogNotFoundError {
+  message: String!
+  code: String!
   id: ID!
-  title: String
-  content: String
+}
+
+type BlogTitleExistsError {
+  message: String!
+  code: String!
+  title: String!
+}
+
+type DeleteBlogSuccess {
+  success: Boolean!
 }
 ```
 
@@ -148,8 +164,8 @@ You can test these operations in the GraphQL Playground at `http://localhost:300
 
 ```graphql
 # Get all blogs with pagination
-query GetAllBlogs {
-  blogs(skip: 0, take: 10) {
+query GetAllBlogs($skip: Int = 0, $take: Int = 10) {
+  blogs(skip: $skip, take: $take) {
     id
     title
     content
@@ -188,6 +204,7 @@ mutation CreateBlog($input: CreateBlogInput!) {
       title
       content
       createdAt
+      updatedAt
     }
     ... on BlogTitleExistsError {
       message
@@ -254,45 +271,29 @@ subscription OnBlogAdded {
 # Variables for CreateBlog
 {
   "input": {
-    "title": "My First Blog",
-    "content": "This is the content of my first blog post."
+    "title": "My First Blog",    # Must be 3-100 characters
+    "content": "This is the content of my first blog post."  # Max 5000 characters
   }
 }
 
 # Variables for UpdateBlog
 {
   "input": {
-    "id": "your-blog-id",
-    "title": "Updated Title",
-    "content": "Updated content for my blog post."
+    "id": "123e4567-e89b-12d3-a456-426614174000",  # Must be a valid UUID
+    "title": "Updated Title",     # Optional, 3-100 characters if provided
+    "content": "Updated content"  # Optional, max 5000 characters if provided
   }
 }
 
 # Variables for GetBlog or DeleteBlog
 {
-  "id": "your-blog-id"
-}
-```
-
-### Error Types
-
-The API uses union types for comprehensive error handling. Possible errors include:
-
-```graphql
-type BlogNotFoundError {
-  message: String!
-  code: String!
-  id: String!
+  "id": "123e4567-e89b-12d3-a456-426614174000"  # Must be a valid UUID
 }
 
-type BlogTitleExistsError {
-  message: String!
-  code: String!
-  title: String!
-}
-
-type DeleteBlogSuccess {
-  success: Boolean!
+# Variables for GetAllBlogs (optional)
+{
+  "skip": 0,
+  "take": 10
 }
 ```
 
