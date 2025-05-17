@@ -31,7 +31,7 @@ To run this application, you'll need:
 - PostgreSQL (v15 recommended)
 - Docker and Docker Compose (for containerized deployment)
 
-## 🔧 Local Development Setup
+## 🔧 Running locally without Docker
 
 1. **Install Dependencies**
 
@@ -60,7 +60,7 @@ To run this application, you'll need:
    - API Endpoint: http://localhost:3000/api
    - GraphQL Playground: http://localhost:3000/graphql
 
-## 🐳 Docker Deployment
+## 🐳 Running locally with Docker
 
 ### Option 1: Using Pre-built Image from Docker Hub
 
@@ -324,7 +324,3 @@ npx nx test TheySaid
   # Development logs
   npx nx serve TheySaid
   ```
-
-```
-
-```
