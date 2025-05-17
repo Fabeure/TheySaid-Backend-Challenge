@@ -285,11 +285,8 @@ subscription OnBlogAdded {
 ### Running Tests
 
 ```bash
-# Run all tests
-npx nx test
-
 # Run specific project tests
-npx nx test TheySaid
+npx nx test api-blogs
 ```
 
 ## 📁 Project Structure
