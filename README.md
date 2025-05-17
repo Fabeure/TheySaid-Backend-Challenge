@@ -13,7 +13,7 @@ A modern blog management system built with NestJS, GraphQL, and TypeORM. This ap
 
 ## 🛠️ Technology Stack
 
-- **Backend Framework**: NestJS v10
+- **Backend Framework**: NestJS
 - **API Layer**: GraphQL with Apollo Server
 - **Database**: PostgreSQL
 - **ORM**: TypeORM
