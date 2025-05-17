@@ -25,11 +25,22 @@ export class BlogTitleExistsError extends BaseError {
   }
 }
 
+@ObjectType()
+export class DeleteBlogSuccess {
+    @Field(() => Boolean)
+    success: boolean;
+
+    constructor(success: boolean) {
+        this.success = success;
+    }
+}
+
 export const BlogResponseUnion = createUnionType({
     name: 'BlogResponse',
     types: () => [
         Blog,
         BlogNotFoundError,
         BlogTitleExistsError,
+        DeleteBlogSuccess,
     ],
 });

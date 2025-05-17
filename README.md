@@ -159,8 +159,8 @@ query GetAllBlogs {
 }
 
 # Get a specific blog by ID
-query GetBlog {
-  blog(id: "your-blog-id") {
+query GetBlog($id: ID!) {
+  blog(id: $id) {
     ... on Blog {
       id
       title
@@ -171,7 +171,7 @@ query GetBlog {
     ... on BlogNotFoundError {
       message
       code
-      blogId
+      id
     }
   }
 }
@@ -181,8 +181,8 @@ query GetBlog {
 
 ```graphql
 # Create a new blog
-mutation CreateBlog {
-  createBlog(input: { title: "My First Blog", content: "This is the content of my first blog post." }) {
+mutation CreateBlog($input: CreateBlogInput!) {
+  createBlog(input: $input) {
     ... on Blog {
       id
       title
@@ -198,8 +198,8 @@ mutation CreateBlog {
 }
 
 # Update an existing blog
-mutation UpdateBlog {
-  updateBlog(input: { id: "your-blog-id", title: "Updated Title", content: "Updated content for my blog post." }) {
+mutation UpdateBlog($input: UpdateBlogInput!) {
+  updateBlog(input: $input) {
     ... on Blog {
       id
       title
@@ -209,22 +209,26 @@ mutation UpdateBlog {
     ... on BlogNotFoundError {
       message
       code
-      blogId
+      id
+    }
+    ... on BlogTitleExistsError {
+      message
+      code
+      title
     }
   }
 }
 
 # Delete a blog
-mutation DeleteBlog {
-  deleteBlog(id: "your-blog-id") {
-    ... on Blog {
-      id
-      title
+mutation DeleteBlog($id: ID!) {
+  deleteBlog(id: $id) {
+    ... on DeleteBlogSuccess {
+      success
     }
     ... on BlogNotFoundError {
       message
       code
-      blogId
+      id
     }
   }
 }
@@ -244,43 +248,51 @@ subscription OnBlogAdded {
 }
 ```
 
-#### Using Variables
+#### Example Variables
 
-You can also use variables in your queries/mutations. Here's an example:
-
-```graphql
-# Query with variables
-query GetBlog($id: ID!) {
-  blog(id: $id) {
-    ... on Blog {
-      id
-      title
-      content
-    }
+```json
+# Variables for CreateBlog
+{
+  "input": {
+    "title": "My First Blog",
+    "content": "This is the content of my first blog post."
   }
 }
 
-# Variables in JSON format
+# Variables for UpdateBlog
+{
+  "input": {
+    "id": "your-blog-id",
+    "title": "Updated Title",
+    "content": "Updated content for my blog post."
+  }
+}
+
+# Variables for GetBlog or DeleteBlog
 {
   "id": "your-blog-id"
 }
 ```
 
-### Error Handling
+### Error Types
 
-The API uses union types for error handling. Possible errors include:
+The API uses union types for comprehensive error handling. Possible errors include:
 
 ```graphql
 type BlogNotFoundError {
   message: String!
   code: String!
-  blogId: String!
+  id: String!
 }
 
 type BlogTitleExistsError {
   message: String!
   code: String!
   title: String!
+}
+
+type DeleteBlogSuccess {
+  success: Boolean!
 }
 ```
 

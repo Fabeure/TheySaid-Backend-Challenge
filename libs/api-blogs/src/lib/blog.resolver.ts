@@ -5,6 +5,7 @@ import {
     BlogResponseUnion,
     BlogNotFoundError,
     BlogTitleExistsError,
+    DeleteBlogSuccess,
 } from '@myorg/api-models';
 import { PubSubService } from '@myorg/api-core'
 import { Inject } from '@nestjs/common';
@@ -70,17 +71,17 @@ export class BlogResolver {
         return await this.blogService.update(existingBlog, input);
     }
 
-    @Mutation(() => Boolean, { name: 'deleteBlog', description: 'Delete a blog' })
+    @Mutation(() => BlogResponseUnion, { name: 'deleteBlog', description: 'Delete a blog' })
     async deleteBlog(
         @Args('id', { type: () => ID }) id: string
-    ): Promise<boolean | BlogNotFoundError> {
+    ): Promise<typeof BlogResponseUnion> {
         const blog = await this.blogService.findOne(id);
         if (!blog) {
             return new BlogNotFoundError(id);
         }
 
         await this.blogService.remove(blog);
-        return true;
+        return new DeleteBlogSuccess(true);
     }
 
     @Subscription(() => Blog, {
