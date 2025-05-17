@@ -266,6 +266,8 @@ mutation DeleteBlog {
 
 #### Subscription Example
 
+Run this subscription on one tab, then add a blog in a new tab. The result should also pop up in real time in the first tab.
+
 ```graphql
 # Subscribe to new blog posts
 subscription OnBlogAdded {
