@@ -1,82 +1,281 @@
-# MyWorkspace
+# TheySaid - Blog Management System
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+A modern blog management system built with NestJS, GraphQL, and TypeORM. This application demonstrates a full-featured backend with GraphQL API, real-time subscriptions, and database integration.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
+## 🚀 Features
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/nest?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+- **GraphQL API**: Full CRUD operations for blog posts
+- **Real-time Updates**: GraphQL subscriptions for live blog updates
+- **Database Integration**: PostgreSQL with TypeORM
+- **Modern Stack**: NestJS, TypeScript, and Nx monorepo
+- **Docker Support**: Containerized deployment ready
+- **Type Safety**: Full TypeScript support with GraphQL type generation
 
-## Finish your CI setup
+## 🛠️ Technology Stack
 
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/azKd1jhvJ4)
+- **Backend Framework**: NestJS v10
+- **API Layer**: GraphQL with Apollo Server
+- **Database**: PostgreSQL
+- **ORM**: TypeORM
+- **Build System**: Nx Workspace
+- **Language**: TypeScript
+- **Container**: Docker & Docker Compose
+- **Testing**: Jest
 
+## 📋 Prerequisites
 
-## Run tasks
+To run this application, you'll need:
 
-To run the dev server for your app, use:
+- Node.js (v18 or later)
+- npm (v8 or later)
+- PostgreSQL (v15 recommended)
+- Docker and Docker Compose (for containerized deployment)
 
-```sh
-npx nx serve TheySaid
+## 🔧 Local Development Setup
+
+1. **Install Dependencies**
+
+   ```bash
+   npm install
+   ```
+
+2. **Set Up PostgreSQL**
+
+   - Install PostgreSQL locally
+   - Create a database named 'test'
+   - Default credentials (can be modified in `libs/api-core/src/lib/database.module.ts`):
+     ```
+     username: postgres
+     password: admin
+     database: test
+     ```
+
+3. **Start the Development Server**
+
+   ```bash
+   npx nx serve TheySaid
+   ```
+
+4. **Access the Application**
+   - API Endpoint: http://localhost:3000/api
+   - GraphQL Playground: http://localhost:3000/api/graphql
+
+## 🐳 Docker Deployment
+
+### Option 1: Using Docker Compose (Recommended)
+
+1. **Build the Application**
+
+   ```bash
+   docker build -t they-said:latest -f apps/TheySaid/Dockerfile .
+   ```
+
+2. **Start Services**
+
+   ```bash
+   docker-compose up -d
+   ```
+
+3. **Stop Services**
+   ```bash
+   docker-compose down
+   ```
+
+### Option 2: Manual Docker Setup
+
+1. **Build the Image**
+
+   ```bash
+   docker build -t they-said:latest -f apps/TheySaid/Dockerfile .
+   ```
+
+2. **Run PostgreSQL Container**
+
+   ```bash
+   docker run -d \
+     --name postgres \
+     -e POSTGRES_USER=postgres \
+     -e POSTGRES_PASSWORD=admin \
+     -e POSTGRES_DB=test \
+     -p 5432:5432 \
+     postgres:15-alpine
+   ```
+
+3. **Run Application Container**
+   ```bash
+   docker run -d \
+     --name they-said \
+     -p 3000:3000 \
+     -e POSTGRES_HOST=postgres \
+     -e POSTGRES_PORT=5432 \
+     -e POSTGRES_USER=postgres \
+     -e POSTGRES_PASSWORD=admin \
+     -e POSTGRES_DB=test \
+     --link postgres \
+     they-said:latest
+   ```
+
+## 📝 API Documentation
+
+### GraphQL Schema
+
+The API provides the following operations:
+
+#### Queries
+
+- `blogs(skip: Int, take: Int): [Blog!]!` - Get all blogs with pagination
+- `blog(id: ID!): BlogResponse!` - Get a specific blog by ID
+
+#### Mutations
+
+- `createBlog(input: CreateBlogInput!): BlogResponse!` - Create a new blog
+- `updateBlog(input: UpdateBlogInput!): BlogResponse!` - Update an existing blog
+- `deleteBlog(id: ID!): BlogResponse!` - Delete a blog
+
+#### Subscriptions
+
+- `blogAdded: Blog!` - Real-time notifications for new blogs
+
+### Data Models
+
+```graphql
+type Blog {
+  id: ID!
+  title: String!
+  content: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input CreateBlogInput {
+  title: String!
+  content: String!
+}
+
+input UpdateBlogInput {
+  id: ID!
+  title: String
+  content: String
+}
 ```
 
-To create a production bundle:
+## 🧪 Testing
 
-```sh
+### Running Tests
+
+```bash
+# Run all tests
+npx nx test
+
+# Run specific project tests
+npx nx test TheySaid
+```
+
+### Test Coverage
+
+```bash
+npx nx test TheySaid --coverage
+```
+
+## 📁 Project Structure
+
+```
+.
+├── apps/
+│   ├── TheySaid/           # Main application
+│   └── TheySaid-e2e/       # End-to-end tests
+├── libs/
+│   ├── api-core/           # Core functionality
+│   ├── api-models/         # Shared models
+│   └── api-blogs/          # Blog feature module
+├── docker-compose.yml      # Docker composition
+└── package.json           # Project dependencies
+```
+
+## 🔍 Monitoring & Debugging
+
+### Logs
+
+- **Docker Logs**
+
+  ```bash
+  # All services
+  docker-compose logs -f
+
+  # Specific service
+  docker-compose logs -f app
+  ```
+
+- **Application Logs**
+  ```bash
+  # Development logs
+  npx nx serve TheySaid
+  ```
+
+### Health Check
+
+The application includes a basic health check endpoint at:
+`http://localhost:3000/api`
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🆘 Troubleshooting
+
+### Common Issues
+
+1. **Database Connection Failed**
+
+   - Verify PostgreSQL is running
+   - Check connection credentials
+   - Ensure database exists
+
+2. **Build Errors**
+
+   - Clear Nx cache: `npx nx reset`
+   - Reinstall dependencies: `npm ci`
+
+3. **Docker Issues**
+   - Ensure Docker daemon is running
+   - Check container logs: `docker-compose logs`
+   - Verify network connectivity between containers
+
+### Getting Help
+
+- Create an issue in the repository
+- Check existing issues for solutions
+- Review the documentation
+
+## 🔄 Updates and Maintenance
+
+### Updating Dependencies
+
+```bash
+# Check outdated packages
+npm outdated
+
+# Update packages
+npm update
+```
+
+### Rebuilding the Application
+
+```bash
+# Clean build
+npx nx reset
 npx nx build TheySaid
+
+# Docker rebuild
+docker-compose down
+docker build -t they-said:latest -f apps/TheySaid/Dockerfile .
+docker-compose up -d
 ```
-
-To see all available targets to run for a project, run:
-
-```sh
-npx nx show project TheySaid
-```
-
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
-
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-Use the plugin's generator to create new projects.
-
-To generate a new application, use:
-
-```sh
-npx nx g @nx/nest:app demo
-```
-
-To generate a new library, use:
-
-```sh
-npx nx g @nx/node:lib mylib
-```
-
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
-
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/nx-api/nest?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
