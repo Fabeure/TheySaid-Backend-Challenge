@@ -81,40 +81,6 @@ To run this application, you'll need:
    docker-compose down
    ```
 
-### Option 2: Manual Docker Setup
-
-1. **Build the Image**
-
-   ```bash
-   docker build -t they-said:latest -f apps/TheySaid/Dockerfile .
-   ```
-
-2. **Run PostgreSQL Container**
-
-   ```bash
-   docker run -d \
-     --name postgres \
-     -e POSTGRES_USER=postgres \
-     -e POSTGRES_PASSWORD=admin \
-     -e POSTGRES_DB=test \
-     -p 5432:5432 \
-     postgres:15-alpine
-   ```
-
-3. **Run Application Container**
-   ```bash
-   docker run -d \
-     --name they-said \
-     -p 3000:3000 \
-     -e POSTGRES_HOST=postgres \
-     -e POSTGRES_PORT=5432 \
-     -e POSTGRES_USER=postgres \
-     -e POSTGRES_PASSWORD=admin \
-     -e POSTGRES_DB=test \
-     --link postgres \
-     they-said:latest
-   ```
-
 ## 📝 API Documentation
 
 ### GraphQL Schema
