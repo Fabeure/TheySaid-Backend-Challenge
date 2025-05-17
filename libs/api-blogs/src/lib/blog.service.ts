@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ConflictException, InternalServerErrorException, Logger } from '@nestjs/common';
+import { Injectable, ConflictException, InternalServerErrorException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Blog, CreateBlogInput, UpdateBlogInput } from '@myorg/api-models'
@@ -90,7 +90,7 @@ export class BlogService {
             const count = await this.blogRepository.count({
                 where: { title },
             });
-            
+
             const exists = count > 0;
             this.logger.debug(`Title "${title}" ${exists ? 'already exists' : 'is available'}`);
             return exists;
