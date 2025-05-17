@@ -89,7 +89,7 @@ The API provides the following operations:
 
 #### Queries
 
-- `blogs(skip: Int, take: Int): [Blog!]!` - Get all blogs with pagination
+- `blogs(skip: Int, take: Int): [Blog!]!` - Get all blogs with pagination (skip 0, take 10 by default)
 - `blog(id: ID!): BlogResponse!` - Get a specific blog by ID
 
 #### Mutations
@@ -127,7 +127,7 @@ input UpdateBlogInput {
 
 ### Sample GraphQL Operations
 
-You can test these operations in the GraphQL Playground at `http://localhost:3000/api/graphql`
+You can test these operations in the GraphQL Playground at `http://localhost:3000/graphql`
 
 #### Query Examples
 
@@ -281,12 +281,6 @@ npx nx test
 npx nx test TheySaid
 ```
 
-### Test Coverage
-
-```bash
-npx nx test TheySaid --coverage
-```
-
 ## 📁 Project Structure
 
 ```
@@ -321,71 +315,3 @@ npx nx test TheySaid --coverage
   # Development logs
   npx nx serve TheySaid
   ```
-
-### Health Check
-
-The application includes a basic health check endpoint at:
-`http://localhost:3000/api`
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🆘 Troubleshooting
-
-### Common Issues
-
-1. **Database Connection Failed**
-
-   - Verify PostgreSQL is running
-   - Check connection credentials
-   - Ensure database exists
-
-2. **Build Errors**
-
-   - Clear Nx cache: `npx nx reset`
-   - Reinstall dependencies: `npm ci`
-
-3. **Docker Issues**
-   - Ensure Docker daemon is running
-   - Check container logs: `docker-compose logs`
-   - Verify network connectivity between containers
-
-### Getting Help
-
-- Create an issue in the repository
-- Check existing issues for solutions
-- Review the documentation
-
-## 🔄 Updates and Maintenance
-
-### Updating Dependencies
-
-```bash
-# Check outdated packages
-npm outdated
-
-# Update packages
-npm update
-```
-
-### Rebuilding the Application
-
-```bash
-# Clean build
-npx nx reset
-npx nx build TheySaid
-
-# Docker rebuild
-docker-compose down
-docker build -t they-said:latest -f apps/TheySaid/Dockerfile .
-docker-compose up -d
-```
