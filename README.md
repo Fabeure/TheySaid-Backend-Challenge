@@ -58,7 +58,7 @@ To run this application, you'll need:
 
 4. **Access the Application**
    - API Endpoint: http://localhost:3000/api
-   - GraphQL Playground: http://localhost:3000/api/graphql
+   - GraphQL Playground: http://localhost:3000/graphql
 
 ## 🐳 Docker Deployment
 
@@ -156,6 +156,150 @@ input UpdateBlogInput {
   id: ID!
   title: String
   content: String
+}
+```
+
+### Sample GraphQL Operations
+
+You can test these operations in the GraphQL Playground at `http://localhost:3000/api/graphql`
+
+#### Query Examples
+
+```graphql
+# Get all blogs with pagination
+query GetAllBlogs {
+  blogs(skip: 0, take: 10) {
+    id
+    title
+    content
+    createdAt
+    updatedAt
+  }
+}
+
+# Get a specific blog by ID
+query GetBlog {
+  blog(id: "your-blog-id") {
+    ... on Blog {
+      id
+      title
+      content
+      createdAt
+      updatedAt
+    }
+    ... on BlogNotFoundError {
+      message
+      code
+      blogId
+    }
+  }
+}
+```
+
+#### Mutation Examples
+
+```graphql
+# Create a new blog
+mutation CreateBlog {
+  createBlog(input: { title: "My First Blog", content: "This is the content of my first blog post." }) {
+    ... on Blog {
+      id
+      title
+      content
+      createdAt
+    }
+    ... on BlogTitleExistsError {
+      message
+      code
+      title
+    }
+  }
+}
+
+# Update an existing blog
+mutation UpdateBlog {
+  updateBlog(input: { id: "your-blog-id", title: "Updated Title", content: "Updated content for my blog post." }) {
+    ... on Blog {
+      id
+      title
+      content
+      updatedAt
+    }
+    ... on BlogNotFoundError {
+      message
+      code
+      blogId
+    }
+  }
+}
+
+# Delete a blog
+mutation DeleteBlog {
+  deleteBlog(id: "your-blog-id") {
+    ... on Blog {
+      id
+      title
+    }
+    ... on BlogNotFoundError {
+      message
+      code
+      blogId
+    }
+  }
+}
+```
+
+#### Subscription Example
+
+```graphql
+# Subscribe to new blog posts
+subscription OnBlogAdded {
+  blogAdded {
+    id
+    title
+    content
+    createdAt
+  }
+}
+```
+
+#### Using Variables
+
+You can also use variables in your queries/mutations. Here's an example:
+
+```graphql
+# Query with variables
+query GetBlog($id: ID!) {
+  blog(id: $id) {
+    ... on Blog {
+      id
+      title
+      content
+    }
+  }
+}
+
+# Variables in JSON format
+{
+  "id": "your-blog-id"
+}
+```
+
+### Error Handling
+
+The API uses union types for error handling. Possible errors include:
+
+```graphql
+type BlogNotFoundError {
+  message: String!
+  code: String!
+  blogId: String!
+}
+
+type BlogTitleExistsError {
+  message: String!
+  code: String!
+  title: String!
 }
 ```
 
