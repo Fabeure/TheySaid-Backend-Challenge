@@ -24,12 +24,16 @@ A modern blog management system built with NestJS, GraphQL, and TypeORM. This ap
 
 ## 📋 Prerequisites
 
-To run this application, you'll need:
+Option 1: Local Development
 
 - Node.js (v18 or later)
 - npm (v8 or later)
 - PostgreSQL (v15 recommended)
-- Docker and Docker Compose (for containerized deployment)
+
+Option 2: Dockerized Setup (Recommended)
+
+- Docker (latest stable version)
+- Docker Compose (v2 or later)
 
 ## 🔧 Running locally without Docker
 
